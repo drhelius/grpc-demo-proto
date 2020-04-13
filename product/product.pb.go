@@ -4,9 +4,13 @@
 package product
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -275,4 +279,120 @@ var fileDescriptor_5f9f5dc4dd6fa6d7 = []byte{
 	0x31, 0x5b, 0x4e, 0x47, 0xa9, 0x5c, 0x30, 0xae, 0x67, 0x38, 0x17, 0x4b, 0xc3, 0x32, 0xad, 0xd2,
 	0x21, 0xc7, 0x85, 0x1c, 0xda, 0xaf, 0xe1, 0x76, 0xa6, 0x2d, 0x5b, 0x5e, 0xff, 0x04, 0x00, 0x00,
 	0xff, 0xff, 0x4a, 0x09, 0xd0, 0xd5, 0x69, 0x02, 0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// ProductServiceClient is the client API for ProductService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type ProductServiceClient interface {
+	Create(ctx context.Context, in *CreateProductReq, opts ...grpc.CallOption) (*CreateProductResp, error)
+	Read(ctx context.Context, in *ReadProductReq, opts ...grpc.CallOption) (*ReadProductResp, error)
+}
+
+type productServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewProductServiceClient(cc grpc.ClientConnInterface) ProductServiceClient {
+	return &productServiceClient{cc}
+}
+
+func (c *productServiceClient) Create(ctx context.Context, in *CreateProductReq, opts ...grpc.CallOption) (*CreateProductResp, error) {
+	out := new(CreateProductResp)
+	err := c.cc.Invoke(ctx, "/product.ProductService/Create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productServiceClient) Read(ctx context.Context, in *ReadProductReq, opts ...grpc.CallOption) (*ReadProductResp, error) {
+	out := new(ReadProductResp)
+	err := c.cc.Invoke(ctx, "/product.ProductService/Read", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ProductServiceServer is the server API for ProductService service.
+type ProductServiceServer interface {
+	Create(context.Context, *CreateProductReq) (*CreateProductResp, error)
+	Read(context.Context, *ReadProductReq) (*ReadProductResp, error)
+}
+
+// UnimplementedProductServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedProductServiceServer struct {
+}
+
+func (*UnimplementedProductServiceServer) Create(ctx context.Context, req *CreateProductReq) (*CreateProductResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (*UnimplementedProductServiceServer) Read(ctx context.Context, req *ReadProductReq) (*ReadProductResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
+}
+
+func RegisterProductServiceServer(s *grpc.Server, srv ProductServiceServer) {
+	s.RegisterService(&_ProductService_serviceDesc, srv)
+}
+
+func _ProductService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/product.ProductService/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).Create(ctx, req.(*CreateProductReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadProductReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).Read(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/product.ProductService/Read",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).Read(ctx, req.(*ReadProductReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _ProductService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "product.ProductService",
+	HandlerType: (*ProductServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Create",
+			Handler:    _ProductService_Create_Handler,
+		},
+		{
+			MethodName: "Read",
+			Handler:    _ProductService_Read_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "product/product.proto",
 }

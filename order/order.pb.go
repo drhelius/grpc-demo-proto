@@ -4,10 +4,14 @@
 package order
 
 import (
+	context "context"
 	fmt "fmt"
 	product "github.com/drhelius/grpc-demo-proto/product"
 	proto "github.com/golang/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -275,4 +279,120 @@ var fileDescriptor_fa47a2077d8980ed = []byte{
 	0xc9, 0xcd, 0x2d, 0xd2, 0xc3, 0x9f, 0xa0, 0xd5, 0x64, 0xe2, 0xc5, 0x46, 0x38, 0x6c, 0xc4, 0xe8,
 	0xb3, 0xe4, 0x2f, 0xf7, 0x5d, 0x7f, 0xd2, 0xf9, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2e, 0x5d,
 	0xf5, 0x18, 0x23, 0x02, 0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// OrderServiceClient is the client API for OrderService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type OrderServiceClient interface {
+	Create(ctx context.Context, in *CreateOrderReq, opts ...grpc.CallOption) (*CreateOrderResp, error)
+	Read(ctx context.Context, in *ReadOrderReq, opts ...grpc.CallOption) (*ReadOrderResp, error)
+}
+
+type orderServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewOrderServiceClient(cc grpc.ClientConnInterface) OrderServiceClient {
+	return &orderServiceClient{cc}
+}
+
+func (c *orderServiceClient) Create(ctx context.Context, in *CreateOrderReq, opts ...grpc.CallOption) (*CreateOrderResp, error) {
+	out := new(CreateOrderResp)
+	err := c.cc.Invoke(ctx, "/order.OrderService/Create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderServiceClient) Read(ctx context.Context, in *ReadOrderReq, opts ...grpc.CallOption) (*ReadOrderResp, error) {
+	out := new(ReadOrderResp)
+	err := c.cc.Invoke(ctx, "/order.OrderService/Read", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// OrderServiceServer is the server API for OrderService service.
+type OrderServiceServer interface {
+	Create(context.Context, *CreateOrderReq) (*CreateOrderResp, error)
+	Read(context.Context, *ReadOrderReq) (*ReadOrderResp, error)
+}
+
+// UnimplementedOrderServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedOrderServiceServer struct {
+}
+
+func (*UnimplementedOrderServiceServer) Create(ctx context.Context, req *CreateOrderReq) (*CreateOrderResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (*UnimplementedOrderServiceServer) Read(ctx context.Context, req *ReadOrderReq) (*ReadOrderResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
+}
+
+func RegisterOrderServiceServer(s *grpc.Server, srv OrderServiceServer) {
+	s.RegisterService(&_OrderService_serviceDesc, srv)
+}
+
+func _OrderService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrderReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/order.OrderService/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).Create(ctx, req.(*CreateOrderReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrderService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadOrderReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).Read(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/order.OrderService/Read",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).Read(ctx, req.(*ReadOrderReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _OrderService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "order.OrderService",
+	HandlerType: (*OrderServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Create",
+			Handler:    _OrderService_Create_Handler,
+		},
+		{
+			MethodName: "Read",
+			Handler:    _OrderService_Read_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "order/order.proto",
 }
