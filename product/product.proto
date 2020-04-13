@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package product;
+option go_package = "github.com/drhelius/grpc-demo-proto/product";
 
 import "google/api/annotations.proto";
 
