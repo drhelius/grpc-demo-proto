@@ -13,7 +13,7 @@ service UserService {
     }
     rpc Read (ReadUserReq) returns (ReadUserResp) {
         option (google.api.http) = {
-            get: "/v1/wishlist/{wishList_id}"
+            get: "/v1/user/{id}"
         };
     }
 }
