@@ -40,6 +40,6 @@ message ReadAccountReq {
 }
 
 message ReadAccountResp {
-    Account acount = 1;
+    Account account = 1;
 }
 
