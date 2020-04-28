@@ -25,6 +25,7 @@ message Order {
     string name = 2;
     int64 date = 3;
     repeated product.Product products = 4;
+    string ip = 5;
 }
 
 message CreateOrderReq {
